@@ -1,0 +1,642 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2016.2.1 (Build 803U_SU)" ts="2019-06-11 14:21:30">
+<Class name="SeaTransport.Commander">
+<Super>%Persistent,%Populate,%XML.Adaptor,%ZEN.DataModel.Adaptor,SeaTransport.Person</Super>
+<TimeChanged>65173,78882.121113</TimeChanged>
+<TimeCreated>65173,52897.031623</TimeCreated>
+
+<Property name="Name">
+<Type>%String</Type>
+<Required>1</Required>
+<Parameter name="POPSPEC" value="Name()"/>
+</Property>
+
+<Property name="License">
+<Type>%String</Type>
+<Required>1</Required>
+<Parameter name="POPSPEC" value="SSN()"/>
+</Property>
+
+<Property name="Experience">
+<Type>Rank</Type>
+<Required>1</Required>
+</Property>
+
+<Method name="introduceYourself">
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+	write !, "Name: ", ..Name
+	write !, "Gender: ", ..Gender
+	write !, "Pesel: ", ..Pesel
+	write !, "License: ", ..License
+	write !, "Rank: ", ..Experience.Title
+	write !, "Days spent at sea: ", ..Experience.DaysAtSea
+	write !, "Works for: ", ..WorksFor.Name
+	write !
+	return 0
+]]></Implementation>
+</Method>
+
+<Method name="shipCommand">
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	write !, "Commander: ", ..Name
+	write !, "In command of a ship: ", ..shipCommand.Name
+	write !, "type: ",..shipCommand.Type.ShipType
+	write !, "with a capacity of: ",..shipCommand.Capacity, " ft."
+]]></Implementation>
+</Method>
+
+<Property name="shipCommand">
+<Type>SeaTransport.Ship</Type>
+<Cardinality>one</Cardinality>
+<Inverse>HasCommanders</Inverse>
+<Relationship>1</Relationship>
+</Property>
+
+<Index name="shipCommandIndex">
+<Properties>shipCommand</Properties>
+</Index>
+
+<Property name="WorksFor">
+<Type>SeaTransport.Forwarder</Type>
+<Cardinality>one</Cardinality>
+<Inverse>HasNumberOfCommanders</Inverse>
+<Relationship>1</Relationship>
+</Property>
+
+<Index name="WorksForIndex">
+<Properties>WorksFor</Properties>
+</Index>
+
+<Storage name="Default">
+<Type>%Library.CacheStorage</Type>
+<DataLocation>^SeaTransport.CommanderD</DataLocation>
+<DefaultData>CommanderDefaultData</DefaultData>
+<IdLocation>^SeaTransport.CommanderD</IdLocation>
+<IndexLocation>^SeaTransport.CommanderI</IndexLocation>
+<StreamLocation>^SeaTransport.CommanderS</StreamLocation>
+<ExtentSize>10</ExtentSize>
+<Data name="CommanderDefaultData">
+<Value name="1">
+<Value>%%CLASSNAME</Value>
+</Value>
+<Value name="2">
+<Value>Name</Value>
+</Value>
+<Value name="3">
+<Value>Gender</Value>
+</Value>
+<Value name="4">
+<Value>Experience</Value>
+</Value>
+<Value name="5">
+<Value>shipCommand</Value>
+</Value>
+<Value name="6">
+<Value>WorksFor</Value>
+</Value>
+<Value name="7">
+<Value>License</Value>
+</Value>
+<Value name="8">
+<Value>Pesel</Value>
+</Value>
+</Data>
+<Property name="%%CLASSNAME">
+<Selectivity>100.0000%</Selectivity>
+<AverageFieldSize>1</AverageFieldSize>
+</Property>
+<Property name="%%ID">
+<Selectivity>1</Selectivity>
+<AverageFieldSize>1.1</AverageFieldSize>
+</Property>
+<Property name="Experience">
+<Selectivity>10.0000%,DaysAtSea:10.0000%,Title:20.0000%</Selectivity>
+<AverageFieldSize>14.2,DaysAtSea:4,Title:8.2</AverageFieldSize>
+</Property>
+<Property name="Gender">
+<Selectivity>50.0000%</Selectivity>
+<AverageFieldSize>3.6</AverageFieldSize>
+</Property>
+<Property name="License">
+<Selectivity>10.0000%</Selectivity>
+<AverageFieldSize>11</AverageFieldSize>
+</Property>
+<Property name="Name">
+<Selectivity>10.0000%</Selectivity>
+<AverageFieldSize>16</AverageFieldSize>
+</Property>
+<Property name="Pesel">
+<Selectivity>10.0000%</Selectivity>
+<AverageFieldSize>11</AverageFieldSize>
+</Property>
+<Property name="WorksFor">
+<Selectivity>20.0000%</Selectivity>
+<AverageFieldSize>1.2</AverageFieldSize>
+</Property>
+<Property name="shipCommand">
+<Selectivity>14.2857%</Selectivity>
+<AverageFieldSize>1.1</AverageFieldSize>
+</Property>
+<SQLMap name="IDKEY">
+<BlockCount>-4</BlockCount>
+</SQLMap>
+<SQLMap name="WorksForIndex">
+<BlockCount>-4</BlockCount>
+</SQLMap>
+<SQLMap name="shipCommandIndex">
+<BlockCount>-4</BlockCount>
+</SQLMap>
+</Storage>
+</Class>
+
+
+<Class name="SeaTransport.Crew">
+<Super>%Persistent,%Populate,%XML.Adaptor,%ZEN.DataModel.Adaptor,SeaTransport.Person</Super>
+<TimeChanged>65173,77887.758383</TimeChanged>
+<TimeCreated>65173,49937.924081</TimeCreated>
+
+<Property name="Name">
+<Type>%String</Type>
+<Required>1</Required>
+<Parameter name="POPSPEC" value="Name()"/>
+</Property>
+
+<Property name="Position">
+<Type>%String</Type>
+<Required>1</Required>
+<Parameter name="VALUELIST" value=",Commander,Mate,Cadet,Boatswain,Seaman,Engineer,Motorman,Oiler,Wiper,Cooker"/>
+</Property>
+
+<Method name="introduceYourself">
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+	write !, "Name: ", ..Name
+	write !, "Gender: ", ..Gender
+	write !, "Title: ", ..Position
+	write !, "Works For: ", ..WorksFor.Name
+	write !
+	return 0
+]]></Implementation>
+</Method>
+
+<Method name="introduceCrew">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	&sql(declare ID cursor for select * into :crew() from SeaTransport.Crew)
+	&sql(open ID)
+	write !, "Available IDs"
+	write !, " ------------"
+	write !,"OID Name Pesel Gender"
+	for 
+	{
+		&sql(fetch ID)
+		quit:(SQLCODE '=0)
+		//write !,"OID Name Pesel Gender"
+		write !, crew(1)," ",crew(2), " ",crew(3), " ", crew(4)
+	}
+	&sql(close ID)
+]]></Implementation>
+</Method>
+
+<Property name="WorksFor">
+<Type>SeaTransport.Forwarder</Type>
+<Cardinality>one</Cardinality>
+<Inverse>HasCrew</Inverse>
+<Relationship>1</Relationship>
+</Property>
+
+<Index name="WorksForIndex">
+<Properties>WorksFor</Properties>
+</Index>
+
+<Storage name="Default">
+<Type>%Library.CacheStorage</Type>
+<DataLocation>^SeaTransport.CrewD</DataLocation>
+<DefaultData>CrewDefaultData</DefaultData>
+<IdLocation>^SeaTransport.CrewD</IdLocation>
+<IndexLocation>^SeaTransport.CrewI</IndexLocation>
+<StreamLocation>^SeaTransport.CrewS</StreamLocation>
+<ExtentSize>10</ExtentSize>
+<Data name="CrewDefaultData">
+<Value name="1">
+<Value>%%CLASSNAME</Value>
+</Value>
+<Value name="2">
+<Value>Name</Value>
+</Value>
+<Value name="3">
+<Value>Gender</Value>
+</Value>
+<Value name="4">
+<Value>Pesel</Value>
+</Value>
+<Value name="5">
+<Value>WorksFor</Value>
+</Value>
+<Value name="6">
+<Value>Position</Value>
+</Value>
+</Data>
+<Property name="%%CLASSNAME">
+<Selectivity>100.0000%</Selectivity>
+<AverageFieldSize>1</AverageFieldSize>
+</Property>
+<Property name="%%ID">
+<Selectivity>1</Selectivity>
+<AverageFieldSize>2</AverageFieldSize>
+</Property>
+<Property name="Gender">
+<Selectivity>50.0000%</Selectivity>
+<AverageFieldSize>4.2</AverageFieldSize>
+</Property>
+<Property name="Name">
+<Selectivity>10.0000%</Selectivity>
+<AverageFieldSize>16.6</AverageFieldSize>
+</Property>
+<Property name="Pesel">
+<Selectivity>10.0000%</Selectivity>
+<AverageFieldSize>11</AverageFieldSize>
+</Property>
+<Property name="Position">
+<Selectivity>14.2857%</Selectivity>
+<AverageFieldSize>7.2</AverageFieldSize>
+</Property>
+<Property name="WorksFor">
+<Selectivity>16.6667%</Selectivity>
+<AverageFieldSize>1.7</AverageFieldSize>
+</Property>
+<SQLMap name="IDKEY">
+<BlockCount>-4</BlockCount>
+</SQLMap>
+<SQLMap name="WorksForIndex">
+<BlockCount>-4</BlockCount>
+</SQLMap>
+</Storage>
+</Class>
+
+
+<Class name="SeaTransport.Forwarder">
+<Super>%Persistent,%Populate</Super>
+<TimeChanged>65173,75139.786992</TimeChanged>
+<TimeCreated>65173,52899.255626</TimeCreated>
+
+<Property name="Name">
+<Type>%String</Type>
+<Required>1</Required>
+</Property>
+
+<Index name="NameIndex">
+<Properties>Name</Properties>
+<Unique>1</Unique>
+</Index>
+
+<Property name="Origin">
+<Type>%String</Type>
+<Required>1</Required>
+</Property>
+
+<Property name="HasShips">
+<Type>SeaTransport.Ship</Type>
+<Cardinality>many</Cardinality>
+<Inverse>BelongsTo</Inverse>
+<Relationship>1</Relationship>
+</Property>
+
+<Property name="HasNumberOfCommanders">
+<Type>SeaTransport.Commander</Type>
+<Cardinality>many</Cardinality>
+<Inverse>WorksFor</Inverse>
+<Relationship>1</Relationship>
+</Property>
+
+<Property name="HasCrew">
+<Type>SeaTransport.Crew</Type>
+<Cardinality>many</Cardinality>
+<Inverse>WorksFor</Inverse>
+<Relationship>1</Relationship>
+</Property>
+
+<Storage name="Default">
+<Type>%Library.CacheStorage</Type>
+<DataLocation>^SeaTransport.ForwarderD</DataLocation>
+<DefaultData>ForwarderDefaultData</DefaultData>
+<IdLocation>^SeaTransport.ForwarderD</IdLocation>
+<IndexLocation>^SeaTransport.ForwarderI</IndexLocation>
+<StreamLocation>^SeaTransport.ForwarderS</StreamLocation>
+<ExtentSize>6</ExtentSize>
+<Data name="ForwarderDefaultData">
+<Structure>listnode</Structure>
+<Subscript/>
+<Value name="1">
+<Value>%%CLASSNAME</Value>
+</Value>
+<Value name="2">
+<Value>Name</Value>
+</Value>
+<Value name="3">
+<Value>Origin</Value>
+</Value>
+</Data>
+<Property name="%%CLASSNAME">
+<Selectivity>100.0000%</Selectivity>
+<AverageFieldSize>1</AverageFieldSize>
+</Property>
+<Property name="%%ID">
+<Selectivity>1</Selectivity>
+<AverageFieldSize>1</AverageFieldSize>
+</Property>
+<Property name="Name">
+<Selectivity>1</Selectivity>
+<AverageFieldSize>15</AverageFieldSize>
+</Property>
+<Property name="Origin">
+<Selectivity>16.6667%</Selectivity>
+<AverageFieldSize>5.33</AverageFieldSize>
+</Property>
+<SQLMap name="IDKEY">
+<BlockCount>-4</BlockCount>
+</SQLMap>
+<SQLMap name="NameIndex">
+<BlockCount>-4</BlockCount>
+</SQLMap>
+</Storage>
+</Class>
+
+
+<Project name="SeaTransport" LastModified="2019-06-11 14:08:22.703299">
+  <Items>
+    <ProjectItem name="SeaTransport.Commander" type="CLS"></ProjectItem>
+    <ProjectItem name="SeaTransport.Crew" type="CLS"></ProjectItem>
+    <ProjectItem name="SeaTransport.Forwarder" type="CLS"></ProjectItem>
+    <ProjectItem name="SeaTransport.Person" type="CLS"></ProjectItem>
+    <ProjectItem name="SeaTransport.Rank" type="CLS"></ProjectItem>
+    <ProjectItem name="SeaTransport.Ship" type="CLS"></ProjectItem>
+    <ProjectItem name="SeaTransport.Type" type="CLS"></ProjectItem>
+  </Items>
+</Project>
+
+
+<Class name="SeaTransport.Person">
+<Abstract>1</Abstract>
+<TimeChanged>65173,77745.098406</TimeChanged>
+<TimeCreated>65173,48394.256751</TimeCreated>
+
+<Property name="Name">
+<Type>%String</Type>
+<Required>1</Required>
+</Property>
+
+<Property name="Gender">
+<Type>%String</Type>
+<Required>1</Required>
+<Parameter name="VALUELIST" value=",Men,Women"/>
+</Property>
+
+<Property name="Pesel">
+<Type>%Integer</Type>
+<Required>1</Required>
+<Parameter name="MAXVAL" value="99999999999"/>
+<Parameter name="MINVAL" value="11111111111"/>
+</Property>
+
+<Index name="PeselIndex">
+<Properties>Pesel</Properties>
+</Index>
+
+<Method name="introduceYourself">
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+	set personals = "Name " + ..Name + " Gender " + ..Gender + " Pesel: " + ..Pesel 
+	return personals
+]]></Implementation>
+</Method>
+</Class>
+
+
+<Class name="SeaTransport.Rank">
+<Super>%SerialObject,%Populate</Super>
+<TimeChanged>65173,52975.491575</TimeChanged>
+<TimeCreated>65173,50934.900474</TimeCreated>
+
+<Property name="DaysAtSea">
+<Type>%Integer</Type>
+<Required>1</Required>
+<Parameter name="MAXVAL" value="9999"/>
+<Parameter name="MINVAL" value="1"/>
+</Property>
+
+<Property name="Title">
+<Type>%String</Type>
+<Required>1</Required>
+<Parameter name="VALUELIST" value=",MasterMariner,Master,Commodore,SeniorCaptain,Skipper"/>
+</Property>
+
+<Storage name="Default">
+<Type>%Library.CacheSerialState</Type>
+<State>RankState</State>
+<StreamLocation>^SeaTransport.RankS</StreamLocation>
+<Data name="RankState">
+<Structure>listnode</Structure>
+<Subscript/>
+<Value name="1">
+<Value>DaysAtSea</Value>
+</Value>
+<Value name="2">
+<Value>Title</Value>
+</Value>
+</Data>
+</Storage>
+</Class>
+
+
+<Class name="SeaTransport.Ship">
+<Super>%Persistent,%Populate</Super>
+<TimeChanged>65173,78252.657583</TimeChanged>
+<TimeCreated>65173,52812.185359</TimeCreated>
+
+<Property name="Name">
+<Type>%String</Type>
+<Required>1</Required>
+</Property>
+
+<Property name="Type">
+<Type>Type</Type>
+<Required>1</Required>
+</Property>
+
+<Property name="Origin">
+<Type>%String</Type>
+<Required>1</Required>
+<Parameter name="POPSPEC" value="City()"/>
+</Property>
+
+<Property name="Capacity">
+<Type>%Integer</Type>
+<Required>1</Required>
+<Parameter name="MAXVAL" value="25000"/>
+<Parameter name="MINVAL" value="100"/>
+</Property>
+
+<Property name="Buoyancy">
+<Type>%Integer</Type>
+<Required>1</Required>
+<Parameter name="MAXVAL" value="5000"/>
+<Parameter name="MINVAL" value="100"/>
+</Property>
+
+<Method name="typeOfShip">
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+	if ..Capacity > 14501  {
+	set result = " Ultra Large Container Vessel (VLCV)"
+	}
+	ELSEIF ..Capacity > 10000 && ..Capacity < 14500 {
+		set result = "New Panamax (Neopanamax)"
+	}
+	elseif ..Capacity > 5101 && ..Capacity < 10000 {
+	set result = "Post-Panamax"
+	}
+	ELSEIF ..Capacity > 3001 && ..Capacity < 5100 {
+		set result = "Panamax"
+	}
+	elseif ..Capacity > 2001 && ..Capacity < 3000 {
+	set result = "Feedermax"
+	}
+	ELSEIF ..Capacity > 1001 && ..Capacity < 2000 {
+		set result = "Feeder"
+	}
+	else {
+		set result = "Small feeder"
+	}
+	 return result
+]]></Implementation>
+</Method>
+
+<Method name="hasOwner">
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[	write !,"Ship: ",..Name, " belongs to: " , ..BelongsTo.Name
+]]></Implementation>
+</Method>
+
+<Property name="BelongsTo">
+<Type>Forwarder</Type>
+<Cardinality>one</Cardinality>
+<Inverse>HasShips</Inverse>
+<Relationship>1</Relationship>
+</Property>
+
+<Index name="BelongsToIndex">
+<Properties>BelongsTo</Properties>
+</Index>
+
+<Property name="HasCommanders">
+<Type>SeaTransport.Commander</Type>
+<Cardinality>many</Cardinality>
+<Inverse>shipCommand</Inverse>
+<Relationship>1</Relationship>
+</Property>
+
+<Storage name="Default">
+<Type>%Library.CacheStorage</Type>
+<DataLocation>^SeaTransport.ShipD</DataLocation>
+<DefaultData>ShipDefaultData</DefaultData>
+<IdLocation>^SeaTransport.ShipD</IdLocation>
+<IndexLocation>^SeaTransport.ShipI</IndexLocation>
+<StreamLocation>^SeaTransport.ShipS</StreamLocation>
+<ExtentSize>10</ExtentSize>
+<Data name="ShipDefaultData">
+<Value name="1">
+<Value>%%CLASSNAME</Value>
+</Value>
+<Value name="2">
+<Value>Name</Value>
+</Value>
+<Value name="3">
+<Value>Type</Value>
+</Value>
+<Value name="4">
+<Value>Origin</Value>
+</Value>
+<Value name="5">
+<Value>Capacity</Value>
+</Value>
+<Value name="6">
+<Value>Buouancy</Value>
+</Value>
+<Value name="7">
+<Value>BelongsTo</Value>
+</Value>
+<Value name="8">
+<Value>Buoyancy</Value>
+</Value>
+</Data>
+<Property name="%%CLASSNAME">
+<Selectivity>100.0000%</Selectivity>
+<AverageFieldSize>1</AverageFieldSize>
+</Property>
+<Property name="%%ID">
+<Selectivity>1</Selectivity>
+<AverageFieldSize>1.1</AverageFieldSize>
+</Property>
+<Property name="BelongsTo">
+<Selectivity>16.6667%</Selectivity>
+<AverageFieldSize>1.7</AverageFieldSize>
+</Property>
+<Property name="Buoyancy">
+<Selectivity>10.0000%</Selectivity>
+<AverageFieldSize>3.8</AverageFieldSize>
+</Property>
+<Property name="Capacity">
+<Selectivity>10.0000%</Selectivity>
+<AverageFieldSize>4.5</AverageFieldSize>
+</Property>
+<Property name="Name">
+<Selectivity>10.0000%</Selectivity>
+<AverageFieldSize>15.3</AverageFieldSize>
+</Property>
+<Property name="Origin">
+<Selectivity>12.5000%</Selectivity>
+<AverageFieldSize>7.5</AverageFieldSize>
+</Property>
+<Property name="Type">
+<Selectivity>25.0000%,ShipType:25.0000%</Selectivity>
+<AverageFieldSize>9.6,ShipType:7.6</AverageFieldSize>
+</Property>
+<SQLMap name="BelongsToIndex">
+<BlockCount>-4</BlockCount>
+</SQLMap>
+<SQLMap name="IDKEY">
+<BlockCount>-4</BlockCount>
+</SQLMap>
+</Storage>
+</Class>
+
+
+<Class name="SeaTransport.Type">
+<Super>%SerialObject,%Populate</Super>
+<TimeChanged>65173,52961.157662</TimeChanged>
+<TimeCreated>65173,52846.073027</TimeCreated>
+
+<Property name="ShipType">
+<Type>%String</Type>
+<Required>1</Required>
+<Parameter name="VALUELIST" value=",Tanker,Container,Bulkhead,Sinker"/>
+</Property>
+
+<Storage name="Default">
+<Type>%Library.CacheSerialState</Type>
+<State>TypeState</State>
+<StreamLocation>^SeaTransport.TypeS</StreamLocation>
+<Data name="TypeState">
+<Structure>listnode</Structure>
+<Subscript/>
+<Value name="1">
+<Value>ShipType</Value>
+</Value>
+</Data>
+</Storage>
+</Class>
+</Export>
